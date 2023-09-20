@@ -1,0 +1,9 @@
+{
+  "watch": ["v1", "utils", "services", "repositories", ".env", "middlewares", "app.ts", "datasource"],
+  "ext": "ts",
+  "ignore": ["src/public"],
+  "exec": "ts-node App.ts --env=production NODE_ENV=production",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

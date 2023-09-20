@@ -1,0 +1,11 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /www/deploy/user-event-api
+file_exists_behavior: OVERWRITE
+
+hooks:
+  BeforeInstall:
+    - location: deploy/docker_deploy.sh
+      runas: www

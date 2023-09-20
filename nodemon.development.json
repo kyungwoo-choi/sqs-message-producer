@@ -1,0 +1,9 @@
+{
+  "watch": ["v1", "utils", "entities", "services", "repositories", ".env"],
+  "ext": "ts",
+  "ignore": ["src/public"],
+  "exec": "ts-node App.ts --env=development NODE_ENV=development",
+  "env": {
+    "NODE_ENV": "development"
+  }
+}

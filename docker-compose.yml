@@ -1,0 +1,24 @@
+version: '3.1'
+services:
+  user-event-api:
+    # image: xxx/user-event-api:${SERVER_ENVIRONMENT}-latest
+    ports:
+      - "3001:3001"
+    hostname: user-event-api.local
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    # environment:
+    command: ["pm2-runtime", "start", "./built/App.js" "-i", "max" "--name", "event-producer"]
+  nginx:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # image: xxx/nginx:1.22.1
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    container_name: nginx-user-event-api
+    depends_on:
+      - user-event-api

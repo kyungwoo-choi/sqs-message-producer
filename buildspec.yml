@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin {ecr address}
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - echo "SERVER_ENVIRONMENT=$SERVER_ENVIRONMENT" >> .env
+      - aws secretsmanager get-secret-value --secret-id env/$SERVER_ENVIRONMENT/user-event-api --query SecretString --output text | jq -r 'to_entries[] | "\(.key)=\(.value)"' > ./user-event-api-env-file
+      - docker-compose build --build-arg SERVER_ENVIRONMENT=$SERVER_ENVIRONMENT
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker-compose push
+      - printf '[{"name":"%s","imageUri":"%s"}]' {ecr address}/user-event-api:$SERVER_ENVIRONMENT-latest > imagedefinitions.json
+artifacts:
+  files:
+    - appspec.yml
+    - deploy/**/*
+    - docker-compose.yml
+    - nginx/**/*
